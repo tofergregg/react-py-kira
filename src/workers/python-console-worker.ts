@@ -58,6 +58,7 @@ const reactPyModule = {
   getInput: (id: string, prompt: string) => {
     const request = new XMLHttpRequest()
     // Synchronous request to be intercepted by service worker
+    console.log("Prompt before Request: '" + prompt + "'");
     request.open('GET', `/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`, false)
     request.send(null)
     return request.responseText
