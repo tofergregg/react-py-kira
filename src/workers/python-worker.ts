@@ -1,4 +1,4 @@
-importScripts('https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js')
+importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js')
 
 interface Pyodide {
   loadPackage: (packages: string[]) => Promise<void>
@@ -48,7 +48,7 @@ const reactPyModule = {
   getInput: (id: string, prompt: string) => {
     const request = new XMLHttpRequest()
     // Synchronous request to be intercepted by service worker
-    console.log("Prompt before rEquest: '" + prompt + "'");
+    console.log("prompt: '" + prompt + "'");
     request.open('GET', `/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`, false)
     request.send(null)
     return request.responseText
@@ -69,6 +69,8 @@ const python = {
     }) => void,
     packages: string[][]
   ) {
+    console.log("initializing python in python-worker.ts");
+    console.log(stdout);
     self.pyodide = await self.loadPyodide({
       stdout
     })
@@ -96,14 +98,26 @@ import sys, builtins
 import react_py
 __prompt_str__ = ""
 def get_input(prompt=""):
+    import os, sys
     global __prompt_str__
     __prompt_str__ = prompt
-    print(prompt, end="")
+    print(prompt, end="", flush=True)
+    sys.stdout.flush()
+    os.fsync(sys.stdout)
     s = react_py.getInput("${id}", prompt)
-    print(s)
+    # print(s)
     return s
 builtins.input = get_input
 sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
+_print_no_flush = builtins.print
+def _print_flush(*args, **kwargs):
+    import os, sys
+    _print_no_flush(*args, **kwargs)
+    if 'end' in kwargs and kwargs['end'] == '':
+        _print_no_flush("__NO_NEWLINE__") # hack
+    sys.stdout.flush()
+    os.fsync(sys.stdout)
+builtins.print = _print_flush
 `
     await self.pyodide.runPythonAsync(patchInputCode)
 

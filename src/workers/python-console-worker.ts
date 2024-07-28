@@ -1,4 +1,4 @@
-importScripts('https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js')
+importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js')
 
 interface Pyodide {
   loadPackage: (packages: string[]) => Promise<void>
@@ -58,7 +58,6 @@ const reactPyModule = {
   getInput: (id: string, prompt: string) => {
     const request = new XMLHttpRequest()
     // Synchronous request to be intercepted by service worker
-    console.log("Prompt before Request: '" + prompt + "'");
     request.open('GET', `/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`, false)
     request.send(null)
     return request.responseText
