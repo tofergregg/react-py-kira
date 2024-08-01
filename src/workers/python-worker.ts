@@ -78,9 +78,10 @@ const python = {
     if (packages[0].length > 0) {
       await self.pyodide.loadPackage(packages[0])
     }
+    await self.pyodide.loadPackage(['micropip'])
+    const micropip = self.pyodide.pyimport('micropip')
+    await micropip.install(['matplotlib', 'beautifulsoup4', 'pandas', 'numpy',]);
     if (packages[1].length > 0) {
-      await self.pyodide.loadPackage(['micropip'])
-      const micropip = self.pyodide.pyimport('micropip')
       await micropip.install(packages[1])
     }
 
@@ -109,15 +110,6 @@ def get_input(prompt=""):
     return s
 builtins.input = get_input
 sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
-_print_no_flush = builtins.print
-def _print_flush(*args, **kwargs):
-    import os, sys
-    _print_no_flush(*args, **kwargs)
-    if 'end' in kwargs and kwargs['end'] == '':
-        _print_no_flush("__NO_NEWLINE__") # hack
-    sys.stdout.flush()
-    os.fsync(sys.stdout)
-builtins.print = _print_flush
 `
     await self.pyodide.runPythonAsync(patchInputCode)
 

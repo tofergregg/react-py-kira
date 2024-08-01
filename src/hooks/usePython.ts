@@ -125,25 +125,6 @@ export default function usePython(props?: UsePythonProps) {
   // Immediately set stdout upon receiving new input
   useEffect(() => {
     if (output.length > 0) {
-      /*
-      // the following is a dirty hack because Pyodide does not output
-      // a newline for print statements that emit a newline
-      if (output[output.length - 1].endsWith('__NO_NEWLINE__')) {
-        const fixedOutput = output;
-        const lastIdx = fixedOutput.length - 1;
-        const lastStr = fixedOutput[lastIdx];
-        fixedOutput[lastIdx] = lastStr.substring(0, lastStr.length - '__NO_NEWLINE__'.length); 
-        setStdout(fixedOutput.join('\n').slice(0, -1));
-        setLastOutputNoNewline(true);
-      } else if (lastOutputNoNewline) {
-        let modifiedOutput = output.slice(0, -1).join('\n') + output.slice(-1);
-        setStdout(modifiedOutput);
-      } else 
-      {
-        setStdout(output.join('\n'))
-        setLastOutputNoNewline(false);
-      }
-     */
         setStdout(output.join('\n'))
     }
   }, [output])
@@ -282,6 +263,7 @@ del sys
   return {
     runPython,
     stdout,
+    output,
     stderr,
     isLoading,
     isReady,
