@@ -1,3 +1,5 @@
+import { ReturnResult } from "../hooks/usePython"
+
 export interface Runner {
   init: (
     stdout: (msg: string) => void,
@@ -10,6 +12,7 @@ export interface Runner {
       version: string
       banner?: string
     }) => void,
+    setReturnValue: (returnResult: ReturnResult) => void,
     packages?: string[][]
   ) => Promise<void>
   interruptExecution: () => void
