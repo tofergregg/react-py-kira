@@ -126,10 +126,21 @@ sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
   async run(code: string) {
     self.outputLength = 0
     self.setReturnValue(undefined)
-    // TODO: not sure if the result is actually getting to it, but will fix when needed
-    const result = await self.pyodide.runPythonAsync(code)
-
-    self.setReturnValue({outputLength: self.outputLength, returnValue: result})
+    await self.pyodide
+    .runPythonAsync(code)
+    .then((output) => {
+      self.setReturnValue({
+        outputLength: self.outputLength,
+        returnValue: output
+      })
+    })
+    .catch((e) => {
+      self.setReturnValue({
+        outputLength: self.outputLength,
+        returnValue: undefined
+      })
+      throw e
+    })
   },
   readFile(name: string) {
     return self.pyodide.FS.readFile(name, { encoding: 'utf8' })
