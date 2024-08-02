@@ -80,7 +80,7 @@ const python = {
     }
     await self.pyodide.loadPackage(['micropip'])
     const micropip = self.pyodide.pyimport('micropip')
-    await micropip.install(['matplotlib', 'beautifulsoup4', 'pandas', 'numpy',]);
+    await micropip.install(['matplotlib', 'beautifulsoup4', 'pandas', 'numpy', 'setuptools', ]);
     if (packages[1].length > 0) {
       await micropip.install(packages[1])
     }
