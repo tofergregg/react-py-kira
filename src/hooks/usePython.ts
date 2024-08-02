@@ -17,6 +17,11 @@ interface UsePythonProps {
   packages?: Packages
 }
 
+export type ReturnResult = {
+  returnValue: unknown
+  outputLength: number
+}
+
 export default function usePython(props?: UsePythonProps) {
   const { packages = {} } = props ?? {}
 
@@ -24,7 +29,7 @@ export default function usePython(props?: UsePythonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [output, setOutput] = useState<string[]>([])
-  const [lastOutputNoNewline, setLastOutputNoNewline] = useState(false)
+  const [returnValue, setReturnValue] = useState<ReturnResult>()
   const [stdout, setStdout] = useState('')
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
@@ -109,6 +114,9 @@ export default function usePython(props?: UsePythonProps) {
             proxy(({ id, version }) => {
               setRunnerId(id)
               console.debug('Loaded pyodide version:', version)
+            }),
+            proxy((returnValue: undefined | ReturnResult) => {
+              setReturnValue(returnValue)
             }),
             allPackages
           )
@@ -276,6 +284,7 @@ del sys
     watchModules,
     unwatchModules,
     isAwaitingInput,
+    returnValue,
     sendInput: sendUserInput,
     prompt: runnerId ? getPrompt(runnerId) : ''
   }
