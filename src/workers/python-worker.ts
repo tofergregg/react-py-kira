@@ -31,6 +31,9 @@ declare global {
       stdout?: (msg: string) => void
     }) => Promise<Pyodide>
     pyodide: Pyodide
+    setReturnValue: (returnResult: ReturnResult | undefined) => void,
+    outputLength: number
+    returnResult: unknown
   }
 }
 
@@ -43,12 +46,12 @@ if (self.location.hostname !== 'localhost') {
 }
 
 import { expose } from 'comlink'
+import { ReturnResult } from '../hooks/usePython'
 
 const reactPyModule = {
   getInput: (id: string, prompt: string) => {
     const request = new XMLHttpRequest()
     // Synchronous request to be intercepted by service worker
-    console.log("prompt: '" + prompt + "'");
     request.open('GET', `/react-py-get-input/?id=${id}&prompt=${encodeURIComponent(prompt)}`, false)
     request.send(null)
     return request.responseText
@@ -67,12 +70,17 @@ const python = {
       version: string
       banner?: string
     }) => void,
+    setReturnValue: (returnResult: ReturnResult | undefined) => void,
     packages: string[][]
   ) {
-    console.log("initializing python in python-worker.ts");
-    console.log(stdout);
+    self.setReturnValue = setReturnValue
+    self.outputLength = 0
+    self.returnResult = undefined
     self.pyodide = await self.loadPyodide({
-      stdout
+      stdout: (str: string) => {
+        self.outputLength += 1
+        stdout(str)
+      }
     })
     await self.pyodide.loadPackage(['pyodide-http'])
     if (packages[0].length > 0) {
@@ -116,7 +124,12 @@ sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
     onLoad({ id, version })
   },
   async run(code: string) {
-    await self.pyodide.runPythonAsync(code)
+    self.outputLength = 0
+    self.setReturnValue(undefined)
+    // TODO: not sure if the result is actually getting to it, but will fix when needed
+    const result = await self.pyodide.runPythonAsync(code)
+
+    self.setReturnValue({outputLength: self.outputLength, returnValue: result})
   },
   readFile(name: string) {
     return self.pyodide.FS.readFile(name, { encoding: 'utf8' })
