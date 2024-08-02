@@ -112,6 +112,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
               setBanner(banner)
               console.debug('Loaded pyodide version:', version)
             }),
+            () => {},
             allPackages
           )
         } catch (error) {
