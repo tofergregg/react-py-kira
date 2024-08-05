@@ -47,6 +47,7 @@ export default function usePythonConsole(props?: UsePythonConsoleProps) {
     writeFile,
     mkdir,
     rmdir,
+    unlink,
     watchModules,
     unwatchModules,
     watchedModules
@@ -238,6 +239,7 @@ del sys
     writeFile,
     mkdir,
     rmdir,
+    unlink,
     watchModules,
     unwatchModules,
     banner,

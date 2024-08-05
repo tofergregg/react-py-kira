@@ -27,6 +27,10 @@ export default function useFilesystem(props: UseFilesystemProps) {
   const rmdir = (name: string) => {
     return runner?.rmdir(name)
   }
+  
+  const unlink = (name: string) => {
+    return runner?.unlink(name)
+  }
 
   const watchModules = (moduleNames: string[]) => {
     setWatchedModules((prev) => new Set([...prev, ...moduleNames]))
@@ -43,6 +47,7 @@ export default function useFilesystem(props: UseFilesystemProps) {
     writeFile,
     mkdir,
     rmdir,
+    unlink,
     watchModules,
     unwatchModules,
     watchedModules

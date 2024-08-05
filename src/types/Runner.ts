@@ -20,6 +20,7 @@ export interface Runner {
   writeFile: (name: string, data: string | ArrayBufferView) => void
   mkdir: (name: string) => void
   rmdir: (name: string) => void
+  unlink: (name: string) => void
 }
 
 export interface PythonRunner extends Runner {

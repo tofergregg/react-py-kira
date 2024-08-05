@@ -53,6 +53,7 @@ export default function usePython(props?: UsePythonProps) {
     writeFile,
     mkdir,
     rmdir,
+    unlink,
     watchModules,
     unwatchModules,
     watchedModules
@@ -281,6 +282,7 @@ del sys
     writeFile,
     mkdir,
     rmdir,
+    unlink,
     watchModules,
     unwatchModules,
     isAwaitingInput,

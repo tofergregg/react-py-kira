@@ -11,6 +11,7 @@ interface Pyodide {
     writeFile: (name: string, data: string, options: unknown) => void
     mkdir: (name: string) => void
     rmdir: (name: string) => void
+    unlink: (name: string) => void
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   globals: any
@@ -194,6 +195,9 @@ sys.stdin.readline = lambda: react_py.getInput("${id}", __prompt_str__)
   },
   rmdir(name: string) {
     self.pyodide.FS.rmdir(name)
+  },
+  unlink(name: string) {
+    self.pyodide.FS.unlink(name)
   }
 }
 
