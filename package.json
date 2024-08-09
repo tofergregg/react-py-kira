@@ -1,6 +1,6 @@
 {
   "name": "@kiralearning/react-py-kira",
-  "version": "1.10.16",
+  "version": "1.10.18",
   "description": "Effortlessly run Python code in your React apps (fork)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,7 +46,8 @@
     "react-dom": "^16.9.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "comlink": "^4.4.1"
+    "comlink": "^4.4.1",
+    "format": "^0.2.2"
   },
   "publishConfig": {
     "access": "public"
