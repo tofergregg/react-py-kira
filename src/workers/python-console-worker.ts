@@ -1,4 +1,4 @@
-importScripts('https://kira-cdn.s3.us-west-1.amazonaws.com/3rdParty/pyodide/pyodide/pyodide.js')
+importScripts("https://d1w1smnrzlh8wo.cloudfront.net/3rdParty/pyodide/pyodide/pyodide.js")
 
 interface Pyodide {
   loadPackage: (packages: string[]) => Promise<void>
