@@ -1,4 +1,6 @@
-importScripts("https://assets.kira-learning.com/3rdParty/pyodide/pyodide/pyodide.js")
+const CDN_URL = 'https://assets.kira-learning.com/3rdParty/pyodide/pyodide'
+
+importScripts(`${CDN_URL}/pyodide.js`)
 
 interface Pyodide {
   loadPackage: (packages: string[]) => Promise<void>
@@ -83,13 +85,13 @@ const python = {
         stdout(str)
       }
     })
-    await self.pyodide.loadPackage(['pyodide-http'])
+    await self.pyodide.loadPackage(['pyodide-http', `${CDN_URL}/zipp-3.20.2-py3-none-any.whl`, `${CDN_URL}/importlib_metadata-8.5.0-py3-none-any.whl`, `${CDN_URL}/importlib_resources-6.4.5-py3-none-any.whl`])
     if (packages[0].length > 0) {
       await self.pyodide.loadPackage(packages[0])
     }
     await self.pyodide.loadPackage(['micropip'])
     const micropip = self.pyodide.pyimport('micropip')
-    await micropip.install(['matplotlib', 'beautifulsoup4', 'pandas', 'numpy', 'setuptools', ]);
+    await micropip.install(['matplotlib', 'beautifulsoup4', 'pandas', 'numpy', 'setuptools']);
     if (packages[1].length > 0) {
       await micropip.install(packages[1])
     }
