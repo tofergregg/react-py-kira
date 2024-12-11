@@ -33,9 +33,9 @@ export default function usePython(props?: UsePythonProps) {
   const [runnerId, setRunnerId] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
-  const [output, setOutput] = useState<OutputWithCount>({count: 0, text: ""})
+  const [output, setOutput] = useState<OutputWithCount>({ count: 0, text: '' })
   const [returnValue, setReturnValue] = useState<ReturnResult>()
-  const [stdout, setStdout] = useState<OutputWithCount>({count: 0, text: ""})
+  const [stdout, setStdout] = useState<string>()
   const [stderr, setStderr] = useState('')
   const [pendingCode, setPendingCode] = useState<string | undefined>()
   const [hasRun, setHasRun] = useState(false)
@@ -115,8 +115,9 @@ export default function usePython(props?: UsePythonProps) {
               if (suppressedMessages.includes(msg)) {
                 return
               }
+              setStdout((prev) => prev + msg)
               setOutput((prev) => {
-                return {count: prev.count + 1, text: msg}
+                return { count: prev.count + 1, text: msg }
               })
             }),
             proxy(({ id, version }) => {
@@ -137,13 +138,6 @@ export default function usePython(props?: UsePythonProps) {
       init()
     }
   }, [workerRef.current])
-
-  // Immediately set stdout upon receiving new input
-  useEffect(() => {
-    if (output.text != "") {
-        setStdout(output)
-    }
-  }, [output])
 
   // React to ready state and run delayed code if pending
   useEffect(() => {
@@ -199,7 +193,7 @@ del sys
   const runPython = useCallback(
     async (code: string, preamble = '') => {
       // Clear stdout and stderr
-      setStdout({count: 0, text: ""})
+      setStdout('')
       setStderr('')
 
       if (lazy && !isReady) {
@@ -221,13 +215,13 @@ del sys
         setIsRunning(true)
         setHasRun(true)
         // Clear output
-        setOutput({count: 0, text: ""})
+        setOutput({ count: 0, text: '' })
         if (!isReady || !runnerRef.current) {
           throw new Error('Pyodide is not loaded yet')
         }
         if (timeout > 0) {
           timeoutTimer = setTimeout(() => {
-            setStdout({count: 0, text: ""})
+            setStdout('')
             setStderr(`Execution timed out. Reached limit of ${timeout} ms.`)
             interruptExecution()
           }, timeout)
@@ -251,7 +245,7 @@ del sys
     cleanup()
     setIsRunning(false)
     setRunnerId(undefined)
-    setOutput({count: 0, text: ""})
+    setOutput({ count: 0, text: '' })
 
     // Spawn new worker
     createWorker()
@@ -295,6 +289,6 @@ del sys
     isAwaitingInput,
     returnValue,
     sendInput: sendUserInput,
-    prompt: runnerId ? getPrompt(runnerId) : '',
+    prompt: runnerId ? getPrompt(runnerId) : ''
   }
 }
